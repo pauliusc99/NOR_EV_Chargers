@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: NOBIL_raw
+    description: 'raw data from NOBIL in a json file using NOBIL API'
+    meta:
+      external_location: "read_json_auto('C:/Users/eier/OneDrive - NTNU/Desktop/nor_ev_chargers/data/NOBIL_data.json', maximum_object_size=50000000)"
+    tables:
+      - name: NOBIL_data

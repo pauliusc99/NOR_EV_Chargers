@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: stg_nobil
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null  
+      - name: position
+        data_tests:
+          - not_null
+      - name: municipality_id
+        data_tests:
+          - cardinality_match:
+              other_column_name: municipality
+      - name: county_id
+        data_tests:
+            - cardinality_match:
+                other_column_name: county
+  - name: stg_counties
+    columns:
+      - name: county_id
+        data_tests:
+          - unique
+          - not_null
+      - name: county
+        data_tests:
+          - unique
+          - not_null
+      - name: geom_wgs84
+        data_tests:
+          - unique
+          - not_null

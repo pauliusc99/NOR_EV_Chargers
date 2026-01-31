@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: map_data
+    description: 'counties geojson file in format EPSG:25833'
+    meta:
+      external_location: "st_read('C:/Users/eier/OneDrive - NTNU/Desktop/nor_ev_chargers/data/Norge_25833_Fylke.geojson')"
+    tables:
+      - name: counties
