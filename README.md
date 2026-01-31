@@ -1,4 +1,4 @@
-# ⚡ NOR_EV_Chargers: Norway EV Infrastructure Analysis
+# ⚡ Norway EV Infrastructure Analysis
 
 An end-to-end data engineering and analytics dashboard visualizing the growth and distribution of electric vehicle charging stations across Norway. This project uses **dbt** for data transformation and **Evidence** for high-performance data storytelling.
 
