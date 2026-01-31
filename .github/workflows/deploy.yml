@@ -1,53 +1,52 @@
-name: Deploy Evidence to Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master, main] # Runs on push to master or main
-  workflow_dispatch: # Allows you to run it manually from the Actions tab
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    branches: 'main' # or whichever branch you want to deploy from
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./dashboard # Tells GitHub to go into dashboard folder
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
-          cache-dependency-path: './dashboard/package-lock.json'
+          cache: npm
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: Build Evidence Site
-        run: npm run build
+      - name: build
         env:
-          # This ensures links work on GitHub Pages (username.github.io/NOR_EV_Chargers)
-          EVIDENCE_VAR_base_path: /${{ github.event.repository.name }}
+          BASE_PATH: '/${{ github.event.repository.name }}'
+          ## Add and uncomment any environment variables here
+          ## EVIDENCE_SOURCE__my_source__username: ${{ secrets.EVIDENCE_SOURCE__MY_SOURCE__USERNAME }}
+          ## EVIDENCE_SOURCE__my_source__private_key: ${{ secrets.EVIDENCE_SOURCE__MY_SOURCE__PRIVATE_KEY }}
+        run: |
+          npm run sources
+          npm run build
 
-      - name: Upload Artifact
+      - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dashboard/build
+          path: 'build/${{ github.event.repository.name }}'
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
