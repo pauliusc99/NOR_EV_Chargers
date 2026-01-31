@@ -3,11 +3,3 @@
 __pycache__/
 *.pyc
 .vscode
-
-# --- Folders ---
-/Kartdata
-/notebook
-/logs
-
-# --- Files ---
-requirements.txt

@@ -1,0 +1,53 @@
+name: Deploy Evidence to Pages
+
+on:
+  push:
+    branches: [master, main] # Runs on push to master or main
+  workflow_dispatch: # Allows you to run it manually from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./dashboard # Tells GitHub to go into dashboard folder
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: './dashboard/package-lock.json'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Evidence Site
+        run: npm run build
+        env:
+          # This ensures links work on GitHub Pages (username.github.io/NOR_EV_Chargers)
+          EVIDENCE_VAR_base_path: /${{ github.event.repository.name }}
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dashboard/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
